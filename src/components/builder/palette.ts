@@ -1,13 +1,7 @@
 "use client";
 
 import type { ComponentType } from "react";
-import {
-  Brain,
-  Database,
-  LineChart,
-  MonitorDot,
-  Sparkles,
-} from "lucide-react";
+import { Brain, Database, LineChart, MonitorDot, Table } from "lucide-react";
 
 export type PaletteItem = {
   id: string;
@@ -43,7 +37,7 @@ export const palette: PaletteItem[] = [
     id: "embedding",
     label: "Embedding",
     description: "Vectorize content for semantic search.",
-    icon: Sparkles,
+    icon: Table,
     accentClass: "bg-info/10 text-info",
   },
   {
