@@ -27,6 +27,7 @@ export function BuilderStudio() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const reactFlow = useReactFlow();
 
@@ -60,42 +61,98 @@ export function BuilderStudio() {
       if (!type || !wrapperRef.current) return;
 
       const bounds = wrapperRef.current.getBoundingClientRect();
-      const position = reactFlow.project({
-        x: event.clientX - bounds.left,
-        y: event.clientY - bounds.top,
-      });
+      const viewport = reactFlow.getViewport();
+      const position = reactFlow.screenToFlowPosition
+        ? reactFlow.screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY,
+          })
+        : {
+            x: (event.clientX - bounds.left - viewport.x) / viewport.zoom,
+            y: (event.clientY - bounds.top - viewport.y) / viewport.zoom,
+          };
 
       const paletteItem = paletteMap.get(type);
       const label = paletteItem ? paletteItem.label : `Node ${nodes.length + 1}`;
 
+      const newNodeId = `${type}-${window.crypto.randomUUID()}`;
       const newNode: Node = {
-        id: `${type}-${Date.now()}`,
+        id: newNodeId,
         type: "default",
         position,
         data: { label },
       };
 
       setNodes((nds) => nds.concat(newNode));
-      setSelectedNodeId(newNode.id);
+      setSelectedNodeId(newNodeId);
+      setSelectedEdgeId(null);
     },
     [nodes.length, paletteMap, reactFlow, setNodes],
   );
 
   const onSelectionChange = useCallback(
-    ({ nodes: selectedNodes }: OnSelectionChangeParams) => {
-      if (!selectedNodes || selectedNodes.length === 0) {
-        setSelectedNodeId(null);
-        return;
-      }
-      setSelectedNodeId(selectedNodes[0]?.id ?? null);
+    ({ nodes: selectedNodes, edges: selectedEdges }: OnSelectionChangeParams) => {
+      const nodeId = selectedNodes && selectedNodes.length > 0
+        ? selectedNodes[0]?.id ?? null
+        : null;
+      const edgeId = selectedEdges && selectedEdges.length > 0
+        ? selectedEdges[0]?.id ?? null
+        : null;
+
+      setSelectedNodeId(nodeId);
+      setSelectedEdgeId(nodeId ? null : edgeId);
     },
     [],
   );
+
+  const removeSelectedNode = useCallback(() => {
+    if (!selectedNodeId) return;
+    setNodes((nds) => nds.filter((node) => node.id !== selectedNodeId));
+    setEdges((eds) =>
+      eds.filter(
+        (edge) =>
+          edge.source !== selectedNodeId && edge.target !== selectedNodeId,
+      ),
+    );
+    setSelectedNodeId(null);
+    setSelectedEdgeId(null);
+  }, [selectedNodeId, setEdges, setNodes]);
+
+  const removeSelectedEdge = useCallback(() => {
+    if (!selectedEdgeId) return;
+    setEdges((eds) => eds.filter((edge) => edge.id !== selectedEdgeId));
+    setSelectedEdgeId(null);
+  }, [selectedEdgeId, setEdges]);
 
   return (
     <div className="flex flex-1 overflow-hidden bg-base-200">
       <FlowLibrary items={palette} onDragStart={onDragStart} />
       <div className="relative flex flex-1 flex-col">
+        {selectedNodeId || selectedEdgeId ? (
+          <div className="absolute right-4 top-4 z-10 flex items-center gap-2 rounded-xl bg-base-100/95 px-3 py-2 shadow-lg shadow-base-300/50">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+              {selectedNodeId ? "Node Selected" : "Connection Selected"}
+            </span>
+            {selectedNodeId ? (
+              <button
+                type="button"
+                className="btn btn-error btn-xs text-error-content"
+                onClick={removeSelectedNode}
+              >
+                Remove
+              </button>
+            ) : null}
+            {selectedEdgeId ? (
+              <button
+                type="button"
+                className="btn btn-error btn-xs text-error-content"
+                onClick={removeSelectedEdge}
+              >
+                Remove
+              </button>
+            ) : null}
+          </div>
+        ) : null}
         <div
           ref={wrapperRef}
           className="relative flex-1 border-x border-base-300"
@@ -127,7 +184,12 @@ export function BuilderStudio() {
           </ReactFlow>
         </div>
       </div>
-      <InspectorPanel selectedNodeId={selectedNodeId} />
+      <InspectorPanel
+        selectedNodeId={selectedNodeId}
+        selectedEdgeId={selectedEdgeId}
+        onRemoveSelected={removeSelectedNode}
+        onRemoveEdge={removeSelectedEdge}
+      />
     </div>
   );
 }
