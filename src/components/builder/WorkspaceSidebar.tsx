@@ -15,18 +15,18 @@ export function WorkspaceSidebar() {
         <div className="card border border-base-300 bg-base-200">
           <div className="card-body gap-2 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
-            Overview
-          </p>
+              Overview
+            </p>
             <p className="text-sm text-base-content/80">
-            Automate competitive research and surface new opportunities.
-          </p>
+              Automate competitive research and surface new opportunities.
+            </p>
           </div>
         </div>
         <div className="card border border-base-300 bg-base-200">
           <div className="card-body gap-2 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
-            Automations
-          </p>
+              Automations
+            </p>
             <ul className="space-y-2 text-xs text-base-content/70">
               <li>• Weekly website scans</li>
               <li>• Pricing change alerts</li>

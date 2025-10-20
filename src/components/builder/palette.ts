@@ -1,7 +1,12 @@
 "use client";
 
-import type { ComponentType } from "react";
 import { Brain, Database, LineChart, MonitorDot, Table } from "lucide-react";
+import type { ComponentType } from "react";
+import type {
+  AiSummaryConfig,
+  BuilderNodeData,
+  WebScrapeConfig,
+} from "./BuilderNode";
 
 export type PaletteItem = {
   id: string;
@@ -9,6 +14,9 @@ export type PaletteItem = {
   description: string;
   icon: ComponentType<{ className?: string }>;
   accentClass: string;
+  defaults?: {
+    config?: BuilderNodeData["config"];
+  };
 };
 
 export const palette: PaletteItem[] = [
@@ -18,6 +26,15 @@ export const palette: PaletteItem[] = [
     description: "Crawl competitor websites for structured data.",
     icon: MonitorDot,
     accentClass: "bg-primary/10 text-primary",
+    defaults: {
+      config: {
+        webScrape: {
+          url: "",
+          selector: "",
+          schedule: "daily",
+        } satisfies WebScrapeConfig,
+      },
+    },
   },
   {
     id: "api-ingest",
@@ -32,6 +49,15 @@ export const palette: PaletteItem[] = [
     description: "Generate insights using Kompyra's AI models.",
     icon: Brain,
     accentClass: "bg-accent/10 text-accent",
+    defaults: {
+      config: {
+        aiSummary: {
+          model: "gpt-4o",
+          prompt: "Summarize key competitive insights from the latest data.",
+          outputSchema: '{"summary": string, "highlights": string[]}',
+        } satisfies AiSummaryConfig,
+      },
+    },
   },
   {
     id: "embedding",
