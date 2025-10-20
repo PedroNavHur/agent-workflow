@@ -16,6 +16,7 @@ export type PaletteItem = {
   accentClass: string;
   defaults?: {
     config?: BuilderNodeData["config"];
+    status?: string;
   };
 };
 
@@ -34,6 +35,7 @@ export const palette: PaletteItem[] = [
           schedule: "daily",
         } satisfies WebScrapeConfig,
       },
+      status: "Idle",
     },
   },
   {
@@ -42,6 +44,9 @@ export const palette: PaletteItem[] = [
     description: "Pull data from third-party APIs and services.",
     icon: Database,
     accentClass: "bg-secondary/10 text-secondary",
+    defaults: {
+      status: "Idle",
+    },
   },
   {
     id: "ai-summary",
@@ -57,6 +62,7 @@ export const palette: PaletteItem[] = [
           outputSchema: '{"summary": string, "highlights": string[]}',
         } satisfies AiSummaryConfig,
       },
+      status: "Idle",
     },
   },
   {
@@ -65,6 +71,9 @@ export const palette: PaletteItem[] = [
     description: "Vectorize content for semantic search.",
     icon: Table,
     accentClass: "bg-info/10 text-info",
+    defaults: {
+      status: "Draft",
+    },
   },
   {
     id: "dashboard",
@@ -72,5 +81,8 @@ export const palette: PaletteItem[] = [
     description: "Visualize KPIs and competitor metrics.",
     icon: LineChart,
     accentClass: "bg-success/10 text-success",
+    defaults: {
+      status: "Active",
+    },
   },
 ];

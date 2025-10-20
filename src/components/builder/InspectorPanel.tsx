@@ -44,15 +44,13 @@ export function InspectorPanel({
               </span>{" "}
               node.
             </p>
-            <label className="form-control w-full max-w-full pt-3">
-              <span className="label p-0 pb-1">
-                <span className="label-text text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
-                  Step Name
-                </span>
+            <div className="flex w-full max-w-full flex-col gap-2 pt-3">
+              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
+                Step Name
               </span>
               <input
                 type="text"
-                className="input input-bordered input-sm bg-base-200 text-base-content"
+                className="input input-sm border border-base-300 bg-base-200 text-base-content"
                 value={selectedNode?.data.label ?? ""}
                 onChange={(event) => onRenameSelected?.(event.target.value)}
                 onBlur={(event) => {
@@ -72,23 +70,21 @@ export function InspectorPanel({
                   }
                 }}
               />
-            </label>
+            </div>
             {selectedNode?.data.kind === "web-scrape" ? (
               <div className="card border border-base-300 bg-base-200">
                 <div className="card-body gap-4 p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
                     Web Scraper Settings
                   </p>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        Target URL
-                      </span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      Target URL
                     </span>
                     <input
                       type="url"
                       placeholder="https://example.com/pricing"
-                      className="input input-bordered input-sm bg-base-100 text-base-content"
+                      className="input input-sm border border-base-300 bg-base-100 text-base-content"
                       value={webScrapeConfig?.url ?? ""}
                       onChange={(event) =>
                         onUpdateWebScrape?.({ url: event.target.value })
@@ -97,17 +93,15 @@ export function InspectorPanel({
                         onUpdateWebScrape?.({ url: event.target.value.trim() })
                       }
                     />
-                  </label>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        CSS Selector (optional)
-                      </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      CSS Selector (optional)
                     </span>
                     <input
                       type="text"
                       placeholder="#pricing-table"
-                      className="input input-bordered input-sm bg-base-100 text-base-content"
+                      className="input input-sm border border-base-300 bg-base-100 text-base-content"
                       value={webScrapeConfig?.selector ?? ""}
                       onChange={(event) =>
                         onUpdateWebScrape?.({ selector: event.target.value })
@@ -118,15 +112,13 @@ export function InspectorPanel({
                         })
                       }
                     />
-                  </label>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        Crawl Frequency
-                      </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      Crawl Frequency
                     </span>
                     <select
-                      className="select select-bordered select-sm bg-base-100 text-base-content"
+                      className="input select select-sm w-full border border-base-300 bg-base-100 text-base-content"
                       value={webScrapeConfig?.schedule ?? "daily"}
                       onChange={(event) =>
                         onUpdateWebScrape?.({
@@ -139,7 +131,7 @@ export function InspectorPanel({
                       <option value="daily">Daily</option>
                       <option value="weekly">Weekly</option>
                     </select>
-                  </label>
+                  </div>
                 </div>
               </div>
             ) : selectedNode?.data.kind === "ai-summary" ? (
@@ -148,14 +140,12 @@ export function InspectorPanel({
                   <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
                     AI Summary Settings
                   </p>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        Model
-                      </span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      Model
                     </span>
                     <select
-                      className="select select-bordered select-sm bg-base-100 text-base-content"
+                      className="select select-sm w-full border border-base-300 bg-base-100 text-base-content"
                       value={aiSummaryConfig?.model ?? "gpt-4o"}
                       onChange={(event) =>
                         onUpdateAiSummary?.({
@@ -167,15 +157,13 @@ export function InspectorPanel({
                       <option value="claude-3-opus">Claude 3 Opus</option>
                       <option value="llama-3">Llama 3</option>
                     </select>
-                  </label>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        Prompt
-                      </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      Prompt
                     </span>
                     <textarea
-                      className="textarea textarea-bordered textarea-sm bg-base-100 text-base-content"
+                      className="textarea textarea-sm border border-base-300 bg-base-100 text-base-content"
                       rows={4}
                       placeholder="Summarize the latest competitor moves..."
                       value={aiSummaryConfig?.prompt ?? ""}
@@ -188,15 +176,13 @@ export function InspectorPanel({
                         })
                       }
                     />
-                  </label>
-                  <label className="form-control w-full">
-                    <span className="label p-0 pb-1">
-                      <span className="label-text text-xs uppercase tracking-[0.3em] text-base-content/60">
-                        Desired Output Structure
-                      </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-base-content/60">
+                      Desired Output Structure
                     </span>
                     <textarea
-                      className="textarea textarea-bordered textarea-sm bg-base-100 text-base-content"
+                      className="textarea textarea-sm border border-base-300 bg-base-100 text-base-content"
                       rows={3}
                       placeholder='{"summary": string, "highlights": string[]}'
                       value={aiSummaryConfig?.outputSchema ?? ""}
@@ -211,7 +197,7 @@ export function InspectorPanel({
                         })
                       }
                     />
-                  </label>
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -238,7 +224,9 @@ export function InspectorPanel({
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
                   Status
                 </p>
-                <p className="text-sm font-semibold text-base-content">Idle</p>
+                <p className="text-sm font-semibold text-base-content">
+                  {selectedNode.data.status ?? "Idle"}
+                </p>
               </div>
             </div>
             <div className="card border border-base-300 bg-base-200">

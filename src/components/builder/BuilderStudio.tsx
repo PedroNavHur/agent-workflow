@@ -97,6 +97,7 @@ export function BuilderStudio() {
       const defaultsConfig = paletteItem?.defaults?.config
         ? JSON.parse(JSON.stringify(paletteItem.defaults.config))
         : undefined;
+      const defaultStatus = paletteItem?.defaults?.status ?? "Draft";
 
       const newNodeId = `${type}-${window.crypto.randomUUID()}`;
       const newNode: BuilderNodeInstance = {
@@ -109,6 +110,7 @@ export function BuilderStudio() {
           icon: paletteItem?.icon ?? MonitorDot,
           accentClass: paletteItem?.accentClass,
           kind: paletteItem?.id,
+          status: defaultStatus,
           config: defaultsConfig,
         },
       };
@@ -308,7 +310,7 @@ export function BuilderStudio() {
             fitView
             panOnScroll
             zoomOnScroll
-            className="reactflow-surface bg-base-300"
+            className="reactflow-surface bg-base-200"
             nodeTypes={nodeTypes}
           >
             <MiniMap className="reactflow-minimap" />

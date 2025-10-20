@@ -22,6 +22,7 @@ export type BuilderNodeData = {
   icon?: ComponentType<{ className?: string }>;
   accentClass?: string;
   kind?: string;
+  status?: string;
   config?: {
     webScrape?: WebScrapeConfig;
     aiSummary?: AiSummaryConfig;
@@ -37,12 +38,13 @@ export function BuilderNode({
 }: NodeProps<BuilderNodeInstance>) {
   const Icon = data.icon;
   const baseClasses =
-    "flex min-w-[200px] flex-col gap-2 rounded-2xl border border-base-300 bg-base-200/95 p-4 text-base-content shadow-lg shadow-base-300/30 transition";
+    "group flex min-w-[240px] items-center gap-4 rounded-full border border-dashed border-base-300 bg-base-200/80 px-5 py-3 text-base-content shadow-sm shadow-base-300/40 transition hover:border-base-200";
   const selectedClasses = selected
-    ? " border-primary/60 shadow-primary/20"
+    ? " border-solid border-primary/60 bg-base-200 shadow-primary/30"
     : "";
-  const badgeBase =
-    "flex h-10 w-10 items-center justify-center rounded-xl bg-base-300 text-base-content/80";
+  const iconShell =
+    "flex h-10 w-10 items-center justify-center rounded-full bg-base-300/80 text-base-content/80";
+  const statusBadge = data.status ?? "Idle";
 
   return (
     <>
@@ -52,23 +54,24 @@ export function BuilderNode({
         className="reactflow-node-handle"
       />
       <div className={`${baseClasses}${selectedClasses}`}>
-        <div className="flex items-center gap-3">
-          <span
-            className={`${badgeBase}${data.accentClass ? ` ${data.accentClass}` : ""}`}
-          >
-            {Icon ? <Icon className="h-5 w-5" /> : null}
+        <span
+          className={`${iconShell}${data.accentClass ? ` ${data.accentClass}` : ""}`}
+        >
+          {Icon ? <Icon className="h-4 w-4" /> : null}
+        </span>
+        <div className="flex flex-1 flex-col">
+          <span className="text-sm font-semibold leading-tight">
+            {data.label}
           </span>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold leading-tight">
-              {data.label}
+          {data.description ? (
+            <span className="text-xs text-base-content/60">
+              {data.description}
             </span>
-            {data.description ? (
-              <span className="text-xs text-base-content/60">
-                {data.description}
-              </span>
-            ) : null}
-          </div>
+          ) : null}
         </div>
+        <span className="badge badge-sm badge-ghost px-3 py-2 text-xs uppercase tracking-[0.2em] text-base-content/80">
+          {statusBadge}
+        </span>
       </div>
       <Handle
         type="source"

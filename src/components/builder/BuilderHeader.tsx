@@ -19,7 +19,7 @@ export function BuilderHeader() {
         </div>
       </div>
       <div className="navbar-end gap-3">
-        <label className="input input-bordered input-sm flex items-center gap-2 bg-base-200/80">
+        <label className="input input-sm flex items-center gap-2 border border-base-300 bg-base-200/80">
           <Search className="h-4 w-4 text-base-content/60" />
           <input
             type="search"
