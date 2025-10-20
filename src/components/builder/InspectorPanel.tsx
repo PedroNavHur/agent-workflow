@@ -14,6 +14,9 @@ type InspectorPanelProps = {
   onRenameSelected?: (value: string) => void;
   onUpdateWebScrape?: (updates: Partial<WebScrapeConfig>) => void;
   onUpdateAiSummary?: (updates: Partial<AiSummaryConfig>) => void;
+  nextNode?: BuilderNodeInstance | null;
+  onFocusNextNode?: () => void;
+  onDisconnectNext?: () => void;
 };
 
 export function InspectorPanel({
@@ -24,6 +27,9 @@ export function InspectorPanel({
   onRenameSelected,
   onUpdateWebScrape,
   onUpdateAiSummary,
+  nextNode = null,
+  onFocusNextNode,
+  onDisconnectNext,
 }: InspectorPanelProps) {
   const nodeLabel = selectedNode?.data.label ?? selectedNode?.id ?? null;
   const webScrapeConfig = selectedNode?.data.config?.webScrape;
@@ -234,22 +240,72 @@ export function InspectorPanel({
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
                   Next Action
                 </p>
-                <p className="text-sm text-base-content/80">
-                  Configure authentication and scheduling to activate this node.
-                </p>
-                {onRemoveSelected ? (
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      className="btn btn-error btn-xs text-error-content"
-                      onClick={onRemoveSelected}
+                {nextNode ? (
+                  <div className="flex items-center gap-3 rounded-xl border border-base-300 bg-base-100 p-3">
+                    <span
+                      className={`${nextNode.data.accentClass ?? "bg-primary/10 text-primary"} flex h-8 w-8 items-center justify-center rounded-full`}
                     >
-                      Remove Node
-                    </button>
+                      {nextNode.data.icon ? (
+                        <nextNode.data.icon className="h-4 w-4" />
+                      ) : null}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold text-base-content">
+                        {nextNode.data.label}
+                      </span>
+                      <span className="text-xs text-base-content/70">
+                        Connected downstream step
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-base-content/80">
+                    Connect this node to another step to continue the flow.
+                  </p>
+                )}
+                {nextNode ? (
+                  <div className="flex gap-2">
+                    {onFocusNextNode ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-xs text-primary-content"
+                        onClick={onFocusNextNode}
+                      >
+                        Config Next Node
+                      </button>
+                    ) : null}
+                    {onDisconnectNext ? (
+                      <button
+                        type="button"
+                        className="btn btn-warning btn-xs text-warning-content"
+                        onClick={onDisconnectNext}
+                      >
+                        Disconnect
+                      </button>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
             </div>
+            {onRemoveSelected ? (
+              <div className="card border border-base-300 bg-base-200">
+                <div className="card-body gap-2 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">
+                    Danger Zone
+                  </p>
+                  <p className="text-sm text-base-content/70">
+                    Removing this node will detach it and its connections from the flow.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-error btn-xs self-start text-error-content"
+                    onClick={onRemoveSelected}
+                  >
+                    Remove Node
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </>
         ) : (
           <div className="card border border-dashed border-base-300 bg-base-200">

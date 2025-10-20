@@ -39,6 +39,7 @@ export function BuilderStudio() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
+  const [workspaceExpanded, setWorkspaceExpanded] = useState(true);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const reactFlow = useReactFlow();
 
@@ -187,6 +188,13 @@ export function BuilderStudio() {
     return nodes.find((node) => node.id === selectedNodeId) ?? null;
   }, [nodes, selectedNodeId]);
 
+  const nextConnectedNode = useMemo(() => {
+    if (!selectedNodeId) return null;
+    const outgoingEdge = edges.find((edge) => edge.source === selectedNodeId);
+    if (!outgoingEdge) return null;
+    return nodes.find((node) => node.id === outgoingEdge.target) ?? null;
+  }, [edges, nodes, selectedNodeId]);
+
   const renameSelectedNode = useCallback(
     (value: string) => {
       if (!selectedNodeId) return;
@@ -259,9 +267,24 @@ export function BuilderStudio() {
     [selectedNodeId, setNodes],
   );
 
+  const focusNode = useCallback(
+    (nodeId: string) => {
+      setSelectedNodeId(nodeId);
+      setSelectedEdgeId(null);
+    },
+    [setSelectedEdgeId, setSelectedNodeId],
+  );
+
   return (
     <div className="flex flex-1 overflow-hidden bg-base-200">
-      <FlowLibrary items={palette} onDragStart={onDragStart} />
+      <div className="hidden md:flex">
+        <FlowLibrary
+          items={palette}
+          onDragStart={onDragStart}
+          workspaceExpanded={workspaceExpanded}
+          onToggleWorkspace={() => setWorkspaceExpanded((prev) => !prev)}
+        />
+      </div>
       <div className="relative flex flex-1 flex-col">
         {selectedNodeId || selectedEdgeId ? (
           <div className="absolute right-4 top-4 z-10 flex items-center gap-2 rounded-xl bg-base-100/95 px-3 py-2 shadow-lg shadow-base-300/50">
@@ -316,7 +339,7 @@ export function BuilderStudio() {
             <MiniMap className="reactflow-minimap" />
             <Controls className="reactflow-controls" />
             <Background
-              color="color-mix(in oklab, var(--color-base-content) 12%, transparent)"
+              color="color-mix(in oklab, var(--color-base-content) 50%, transparent)"
               gap={28}
               size={2}
               variant={BackgroundVariant.Dots}
@@ -332,6 +355,26 @@ export function BuilderStudio() {
         onRenameSelected={renameSelectedNode}
         onUpdateWebScrape={updateSelectedWebScrape}
         onUpdateAiSummary={updateSelectedAiSummary}
+        nextNode={nextConnectedNode}
+        onFocusNextNode={
+          nextConnectedNode ? () => focusNode(nextConnectedNode.id) : undefined
+        }
+        onDisconnectNext={
+          nextConnectedNode
+            ? () => {
+                const outgoingEdge = edges.find(
+                  (edge) =>
+                    edge.source === selectedNodeId &&
+                    edge.target === nextConnectedNode.id,
+                );
+                if (!outgoingEdge) return;
+                setEdges((eds) =>
+                  eds.filter((edge) => edge.id !== outgoingEdge.id),
+                );
+                setSelectedEdgeId(null);
+              }
+            : undefined
+        }
       />
     </div>
   );

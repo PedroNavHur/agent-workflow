@@ -9,9 +9,9 @@
   /* biome-ignore lint: not supported yet */
   prefersdark: false;
   color-scheme: "dark";
-  --color-base-100: oklch(34% 0.024 270);
-  --color-base-200: oklch(31% 0.02 268);
-  --color-base-300: oklch(28.5% 0.018 266);
+  --color-base-100: oklch(38% 0.024 270);
+  --color-base-200: oklch(34.5% 0.02 268);
+  --color-base-300: oklch(31% 0.018 266);
   --color-base-content: oklch(82.901% 0.031 222.959);
   --color-primary: oklch(86.133% 0.141 139.549);
   --color-primary-content: oklch(17.226% 0.028 139.549);
@@ -116,6 +116,10 @@ body {
   box-shadow: none;
   color: var(--color-base-content);
   transition: transform 150ms ease;
+}
+
+.reactflow-surface .react-flow__pane {
+  background-color: color-mix(in oklab, var(--color-base-300) 80%, transparent);
 }
 
 .reactflow-surface .react-flow__node:focus-visible,
